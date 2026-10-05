@@ -82,6 +82,7 @@ namespace SpaceInvaders
         private void OnShotFired(Vector3 position, Faction faction)
         {
             GameObject instance = Pooling.Instantiate(flashPrefab.gameObject, position, Quaternion.identity);
+            if (instance.transform.parent == null) DontDestroyOnLoad(instance);
             MuzzleFlash flash = instance.GetComponent<MuzzleFlash>();
             flashes.Add(flash);
             flash.Play(config, faction == Faction.Player ? config.PlayerColor : config.EnemyColor, ReleaseFlash);
@@ -115,6 +116,7 @@ namespace SpaceInvaders
         private void Burst(Vector3 position, Color color, int count)
         {
             GameObject instance = Pooling.Instantiate(burstPrefab.gameObject, position, Quaternion.identity);
+            if (instance.transform.parent == null) DontDestroyOnLoad(instance);
             PixelBurst burst = instance.GetComponent<PixelBurst>();
             bursts.Add(burst);
             burst.Play(config, color, count, ReleaseBurst);

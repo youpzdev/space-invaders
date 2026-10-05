@@ -39,6 +39,7 @@ namespace SpaceInvaders
             if (direction != Vector2.up && direction != Vector2.down)
                 throw new ArgumentException($"Projectile direction must be vertical: {direction}", nameof(direction));
             GameObject instance = Pooling.Instantiate(prefab.gameObject, position, Quaternion.identity);
+            if (instance.transform.parent == null) DontDestroyOnLoad(instance);
             Projectile projectile = instance.GetComponent<Projectile>();
             active.Add(projectile);
             float speed = faction == Faction.Player ? config.PlayerSpeed : config.EnemySpeed;

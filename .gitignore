@@ -41,3 +41,5 @@ Thumbs.db
 *.keystore
 *.jks
 key.properties
+**/Assets/Resources/PerformanceTestRunInfo.json*
+**/Assets/Resources/PerformanceTestRunSettings.json*

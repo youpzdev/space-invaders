@@ -6,7 +6,10 @@ namespace SpaceInvaders
 {
     public sealed class PlayerHitEffect : MonoBehaviour
     {
+        [Header("Visuals")]
+        [Tooltip("Sprite renderer used by this component.")]
         [SerializeField] private SpriteRenderer sprite;
+
         private PlayerDamageReceiver receiver;
         private Color initialColor;
         private Tween blink;
@@ -14,9 +17,21 @@ namespace SpaceInvaders
 
         public void Initialize(PlayerDamageReceiver damageReceiver)
         {
-            if (damageReceiver == null) throw new ArgumentNullException(nameof(damageReceiver));
-            if (sprite == null) throw new InvalidOperationException("PlayerHitEffect.sprite is missing");
-            if (receiver != null) Unsubscribe();
+            if (damageReceiver == null)
+            {
+                throw new ArgumentNullException(nameof(damageReceiver));
+            }
+
+            if (sprite == null)
+            {
+                throw new InvalidOperationException("PlayerHitEffect.sprite is missing");
+            }
+
+            if (receiver != null)
+            {
+                Unsubscribe();
+            }
+
             receiver = damageReceiver;
             initialColor = sprite.color;
             receiver.DamageTaken += OnDamageTaken;
@@ -29,7 +44,10 @@ namespace SpaceInvaders
             flash?.Kill();
             blink = null;
             flash = null;
-            if (sprite != null) sprite.color = initialColor;
+            if (sprite != null)
+            {
+                sprite.color = initialColor;
+            }
         }
 
         private void OnDamageTaken()
@@ -39,7 +57,10 @@ namespace SpaceInvaders
             sprite.color = Color.white;
             flash = sprite.DOColor(initialColor, 0.08f).OnComplete(() =>
             {
-                if (receiver.IsInvulnerable) StartBlinking();
+                if (receiver.IsInvulnerable)
+                {
+                    StartBlinking();
+                }
             });
         }
 
@@ -66,7 +87,11 @@ namespace SpaceInvaders
 
         private void OnDestroy()
         {
-            if (receiver != null) Unsubscribe();
+            if (receiver != null)
+            {
+                Unsubscribe();
+            }
+
             StopEffect();
         }
     }

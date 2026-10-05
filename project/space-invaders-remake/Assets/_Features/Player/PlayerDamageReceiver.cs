@@ -13,13 +13,22 @@ namespace SpaceInvaders
         public Faction Faction => Faction.Player;
         public Health Health { get; private set; }
         public bool IsInvulnerable => invulnerable;
+
         public event Action<bool> InvulnerabilityChanged;
         public event Action DamageTaken;
 
         public void Initialize(Health health, PlayerConfig playerConfig)
         {
-            if (health == null) throw new ArgumentNullException(nameof(health));
-            if (playerConfig == null) throw new ArgumentNullException(nameof(playerConfig));
+            if (health == null)
+            {
+                throw new ArgumentNullException(nameof(health));
+            }
+
+            if (playerConfig == null)
+            {
+                throw new ArgumentNullException(nameof(playerConfig));
+            }
+
             playerConfig.Validate();
             StopReceivingDamage();
             Health = health;
@@ -29,8 +38,16 @@ namespace SpaceInvaders
 
         public void TakeDamage(int amount)
         {
-            if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, "Player damage must be positive");
-            if (!receivingDamage || Health.IsDepleted || invulnerable) return;
+            if (amount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Player damage must be positive");
+            }
+
+            if (!receivingDamage || Health.IsDepleted || invulnerable)
+            {
+                return;
+            }
+
             SetInvulnerable(true);
             cancelProtection = Timer.After(config.InvulnerabilityDuration, EndProtection, this);
             DamageTaken?.Invoke();
@@ -53,7 +70,11 @@ namespace SpaceInvaders
 
         private void SetInvulnerable(bool value)
         {
-            if (invulnerable == value) return;
+            if (invulnerable == value)
+            {
+                return;
+            }
+
             invulnerable = value;
             InvulnerabilityChanged?.Invoke(value);
         }

@@ -14,9 +14,15 @@ namespace SpaceInvaders
         private readonly DefeatZone defeatZone;
         private readonly ResultPanel result;
 
-        public GameController(GameSession session, PlayerController player, PlayerDamageReceiver damage,
-            PlayerHitEffect effect, EnemyFormation formation, EnemyShooter shooter, ProjectileSystem projectiles,
-            DefeatZone defeatZone, ResultPanel result)
+        public GameController(GameSession session,
+            PlayerController player,
+            PlayerDamageReceiver damage,
+            PlayerHitEffect effect,
+            EnemyFormation formation,
+            EnemyShooter shooter,
+            ProjectileSystem projectiles,
+            DefeatZone defeatZone,
+            ResultPanel result)
         {
             this.session = session;
             this.player = player;
@@ -44,6 +50,7 @@ namespace SpaceInvaders
         }
 
         private void OnEnemyRemoved(int remaining) => session.RegisterEnemyDeath(remaining);
+
         private void OnDefeat() => session.Lose();
 
         private void OnFinished(GameState state, int score)

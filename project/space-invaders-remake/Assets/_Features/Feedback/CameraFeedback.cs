@@ -7,7 +7,10 @@ namespace SpaceInvaders
 {
     public sealed class CameraFeedback : MonoBehaviour
     {
+        [Header("Lighting")]
+        [Tooltip("Point light pulsed when the player takes damage.")]
         [SerializeField] private Light2D damageLight;
+
         private Camera gameCamera;
         private FeedbackConfig config;
         private Vector3 basePosition;
@@ -20,9 +23,21 @@ namespace SpaceInvaders
 
         public void Initialize(Camera camera, FeedbackConfig feedbackConfig)
         {
-            if (camera == null) throw new ArgumentNullException(nameof(camera));
-            if (feedbackConfig == null) throw new ArgumentNullException(nameof(feedbackConfig));
-            if (damageLight == null) throw new InvalidOperationException("CameraFeedback.damageLight is missing");
+            if (camera == null)
+            {
+                throw new ArgumentNullException(nameof(camera));
+            }
+
+            if (feedbackConfig == null)
+            {
+                throw new ArgumentNullException(nameof(feedbackConfig));
+            }
+
+            if (damageLight == null)
+            {
+                throw new InvalidOperationException("CameraFeedback.damageLight is missing");
+            }
+
             config = feedbackConfig;
             gameCamera = camera;
             basePosition = camera.transform.position;
@@ -31,7 +46,9 @@ namespace SpaceInvaders
         }
 
         public void PlayShot() => Shake(config.ShotShake, config.ShakeDuration);
+
         public void PlayHit() => Shake(config.HitShake, config.ShakeDuration);
+
         public void PlayDeath() => Shake(config.DeathShake, config.ShakeDuration);
 
         public void PlayPlayerDamage()
@@ -40,9 +57,15 @@ namespace SpaceInvaders
             backgroundPulse?.Kill();
             lightPulse?.Kill();
             gameCamera.backgroundColor = config.DamageBackgroundColor;
-            backgroundPulse = DOTween.To(() => gameCamera.backgroundColor, color => gameCamera.backgroundColor = color, baseBackground, config.PlayerDamageDuration);
+            backgroundPulse = DOTween.To(() => gameCamera.backgroundColor,
+                color => gameCamera.backgroundColor = color,
+                baseBackground,
+                config.PlayerDamageDuration);
             damageLight.intensity = config.DamageLightIntensity;
-            lightPulse = DOTween.To(() => damageLight.intensity, value => damageLight.intensity = value, baseLightIntensity, config.PlayerDamageDuration);
+            lightPulse = DOTween.To(() => damageLight.intensity,
+                value => damageLight.intensity = value,
+                baseLightIntensity,
+                config.PlayerDamageDuration);
         }
 
         public void StopFeedback()
@@ -59,12 +82,20 @@ namespace SpaceInvaders
                 gameCamera.transform.position = basePosition;
                 gameCamera.backgroundColor = baseBackground;
             }
-            if (damageLight != null) damageLight.intensity = baseLightIntensity;
+
+            if (damageLight != null)
+            {
+                damageLight.intensity = baseLightIntensity;
+            }
         }
 
         private void Shake(float strength, float duration)
         {
-            if (shake != null && shake.IsActive() && strength < currentShakeStrength) return;
+            if (shake != null && shake.IsActive() && strength < currentShakeStrength)
+            {
+                return;
+            }
+
             shake?.Kill();
             currentShakeStrength = strength;
             gameCamera.transform.position = basePosition;

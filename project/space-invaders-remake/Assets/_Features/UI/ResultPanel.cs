@@ -7,16 +7,23 @@ namespace SpaceInvaders
     [RequireComponent(typeof(CanvasGroup))]
     public sealed class ResultPanel : MonoBehaviour
     {
+        [Header("Result Labels")]
+        [Tooltip("Label displaying the victory or defeat title.")]
         [SerializeField] private TMP_Text title;
+
+        [Tooltip("Label displaying the score at the end of the round.")]
         [SerializeField] private TMP_Text finalScore;
+
         private CanvasGroup canvasGroup;
         private Tween entrance;
         private Vector3 titleScale;
+
         private void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             titleScale = title.transform.localScale;
         }
+
         public void Show(GameState state, int score)
         {
             title.text = state == GameState.Won ? "SECTOR CLEAR" : "GAME OVER";
@@ -32,6 +39,7 @@ namespace SpaceInvaders
         }
 
         public void Hide() => gameObject.SetActive(false);
+
         private void OnDisable()
         {
             entrance?.Kill();

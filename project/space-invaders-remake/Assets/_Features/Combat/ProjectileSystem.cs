@@ -6,7 +6,10 @@ namespace SpaceInvaders
 {
     public sealed class ProjectileSystem : MonoBehaviour
     {
+        [Header("Prefab")]
+        [Tooltip("Projectile prefab shared by player and enemy shots.")]
         [SerializeField] private Projectile prefab;
+
         private readonly HashSet<Projectile> active = new HashSet<Projectile>();
         private ProjectileConfig config;
         private Camera gameCamera;
@@ -16,9 +19,21 @@ namespace SpaceInvaders
 
         public void Initialize(ProjectileConfig projectileConfig, Camera camera)
         {
-            if (projectileConfig == null) throw new ArgumentNullException(nameof(projectileConfig));
-            if (camera == null) throw new ArgumentNullException(nameof(camera));
-            if (prefab == null) throw new InvalidOperationException("ProjectileSystem.prefab is missing");
+            if (projectileConfig == null)
+            {
+                throw new ArgumentNullException(nameof(projectileConfig));
+            }
+
+            if (camera == null)
+            {
+                throw new ArgumentNullException(nameof(camera));
+            }
+
+            if (prefab == null)
+            {
+                throw new InvalidOperationException("ProjectileSystem.prefab is missing");
+            }
+
             projectileConfig.Validate();
             config = projectileConfig;
             gameCamera = camera;
@@ -27,19 +42,37 @@ namespace SpaceInvaders
 
         public void StartPlaying()
         {
-            if (config == null) throw new InvalidOperationException("ProjectileSystem.Initialize must run before StartPlaying");
+            if (config == null)
+            {
+                throw new InvalidOperationException("ProjectileSystem.Initialize must run before StartPlaying");
+            }
+
             playing = true;
         }
 
         public void Fire(Vector3 position, Vector2 direction, Faction faction)
         {
             if (faction != Faction.Player && faction != Faction.Enemy)
+            {
                 throw new ArgumentOutOfRangeException(nameof(faction), faction, "Projectile faction must be Player or Enemy");
-            if (!playing) return;
+            }
+
+            if (!playing)
+            {
+                return;
+            }
+
             if (direction != Vector2.up && direction != Vector2.down)
+            {
                 throw new ArgumentException($"Projectile direction must be vertical: {direction}", nameof(direction));
+            }
+
             GameObject instance = Pooling.Instantiate(prefab.gameObject, position, Quaternion.identity);
-            if (instance.transform.parent == null) DontDestroyOnLoad(instance);
+            if (instance.transform.parent == null)
+            {
+                DontDestroyOnLoad(instance);
+            }
+
             Projectile projectile = instance.GetComponent<Projectile>();
             active.Add(projectile);
             float speed = faction == Faction.Player ? config.PlayerSpeed : config.EnemySpeed;
@@ -51,7 +84,13 @@ namespace SpaceInvaders
         {
             playing = false;
             foreach (Projectile projectile in new List<Projectile>(active))
-                if (projectile != null) projectile.ReturnToPool();
+            {
+                if (projectile != null)
+                {
+                    projectile.ReturnToPool();
+                }
+            }
+
             active.Clear();
         }
 
@@ -64,7 +103,10 @@ namespace SpaceInvaders
         private void OnDestroy()
         {
             StopAndClear();
-            if (prefab != null) Pooling.Clear(prefab.gameObject);
+            if (prefab != null)
+            {
+                Pooling.Clear(prefab.gameObject);
+            }
         }
     }
 }

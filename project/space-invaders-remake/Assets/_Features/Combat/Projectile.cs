@@ -15,7 +15,11 @@ namespace SpaceInvaders
 
         public event Action<Faction> Launched;
 
-        public void Initialize(Vector2 direction, Faction owner, float speed, Camera camera, Action<Projectile> returnToPool)
+        public void Initialize(Vector2 direction,
+            Faction owner,
+            float speed,
+            Camera camera,
+            Action<Projectile> returnToPool)
         {
             body = GetComponent<Rigidbody2D>();
             gameCamera = camera;
@@ -31,7 +35,11 @@ namespace SpaceInvaders
 
         public void ReturnToPool()
         {
-            if (!flying) return;
+            if (!flying)
+            {
+                return;
+            }
+
             flying = false;
             body.linearVelocity = Vector2.zero;
             Action<Projectile> callback = release;
@@ -41,23 +49,41 @@ namespace SpaceInvaders
 
         private void FixedUpdate()
         {
-            if (!flying) return;
+            if (!flying)
+            {
+                return;
+            }
+
             body.MovePosition(body.position + velocity * Time.fixedDeltaTime);
         }
 
         private void Update()
         {
-            if (!flying) return;
+            if (!flying)
+            {
+                return;
+            }
+
             Vector3 viewport = gameCamera.WorldToViewportPoint(transform.position);
             if (viewport.y < -0.05f || viewport.y > 1.05f || viewport.x < -0.05f || viewport.x > 1.05f)
+            {
                 ReturnToPool();
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!flying) return;
+            if (!flying)
+            {
+                return;
+            }
+
             IDamageable target = other.GetComponentInParent<IDamageable>();
-            if (target == null || target.Faction == faction) return;
+            if (target == null || target.Faction == faction)
+            {
+                return;
+            }
+
             flying = false;
             body.linearVelocity = Vector2.zero;
             Action<Projectile> callback = release;

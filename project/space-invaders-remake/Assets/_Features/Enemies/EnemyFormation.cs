@@ -10,7 +10,9 @@ namespace SpaceInvaders
         private FormationConfig config;
         private DefeatZone defeatZone;
         private Action cancelDescent;
+
         public int AliveCount => aliveEnemies.Count;
+
         public event Action<int> EnemyRemoved;
 
         public void Initialize(Enemy[] enemies, FormationConfig settings, DefeatZone zone)
@@ -33,7 +35,10 @@ namespace SpaceInvaders
         private void Descend()
         {
             transform.position += Vector3.down * config.DescentStep;
-            foreach (Enemy enemy in aliveEnemies) defeatZone.CheckEnemy(enemy);
+            foreach (Enemy enemy in aliveEnemies)
+            {
+                defeatZone.CheckEnemy(enemy);
+            }
         }
 
         public void StopMoving()
@@ -49,7 +54,11 @@ namespace SpaceInvaders
 
         private void OnEnemyDied(Enemy enemy)
         {
-            if (!aliveEnemies.Remove(enemy)) return;
+            if (!aliveEnemies.Remove(enemy))
+            {
+                return;
+            }
+
             enemy.Died -= OnEnemyDied;
             EnemyRemoved?.Invoke(aliveEnemies.Count);
         }
@@ -58,7 +67,13 @@ namespace SpaceInvaders
         {
             StopMoving();
             foreach (Enemy enemy in aliveEnemies)
-                if (enemy != null) enemy.Died -= OnEnemyDied;
+            {
+                if (enemy != null)
+                {
+                    enemy.Died -= OnEnemyDied;
+                }
+            }
+
             aliveEnemies.Clear();
         }
     }

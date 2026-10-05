@@ -7,16 +7,30 @@ namespace SpaceInvaders
 {
     public sealed class MuzzleFlash : MonoBehaviour
     {
+        [Header("Visuals")]
+        [Tooltip("Sprite renderer used by this component.")]
         [SerializeField] private SpriteRenderer sprite;
+
+        [Header("Lighting")]
+        [Tooltip("Point light faded out with the muzzle flash.")]
         [SerializeField] private Light2D flashLight;
+
         private Tween flashTween;
         private Action<MuzzleFlash> release;
         private bool active;
 
         public void Play(FeedbackConfig config, Color color, Action<MuzzleFlash> returnToPool)
         {
-            if (sprite == null) throw new InvalidOperationException("MuzzleFlash.sprite is missing");
-            if (flashLight == null) throw new InvalidOperationException("MuzzleFlash.flashLight is missing");
+            if (sprite == null)
+            {
+                throw new InvalidOperationException("MuzzleFlash.sprite is missing");
+            }
+
+            if (flashLight == null)
+            {
+                throw new InvalidOperationException("MuzzleFlash.flashLight is missing");
+            }
+
             flashTween?.Kill();
             release = returnToPool;
             active = true;
@@ -33,7 +47,11 @@ namespace SpaceInvaders
 
         public void ReturnToPool()
         {
-            if (!active) return;
+            if (!active)
+            {
+                return;
+            }
+
             active = false;
             flashTween?.Kill();
             flashTween = null;

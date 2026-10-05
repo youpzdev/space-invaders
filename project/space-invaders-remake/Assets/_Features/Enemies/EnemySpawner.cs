@@ -23,7 +23,10 @@ namespace SpaceInvaders
             formationConfig.Validate();
             enemyConfig.Validate();
             if (prefab == null || parent == null)
+            {
                 throw new InvalidOperationException("EnemySpawner: prefab and parent must be assigned.");
+            }
+
             var enemies = new Enemy[formationConfig.Rows * formationConfig.Columns];
             float startX = -(formationConfig.Columns - 1) * formationConfig.Spacing.x * 0.5f;
             for (int row = 0; row < formationConfig.Rows; row++)
@@ -31,12 +34,12 @@ namespace SpaceInvaders
                 for (int column = 0; column < formationConfig.Columns; column++)
                 {
                     Enemy enemy = UnityEngine.Object.Instantiate(prefab, parent);
-                    enemy.transform.localPosition = new Vector3(startX + column * formationConfig.Spacing.x,
-                        -row * formationConfig.Spacing.y, 0f);
+                    enemy.transform.localPosition = new Vector3(startX + column * formationConfig.Spacing.x, -row * formationConfig.Spacing.y, 0f);
                     enemy.Initialize(enemyConfig.HitPoints, formationConfig.RowSprites[row % formationConfig.RowSprites.Length]);
                     enemies[row * formationConfig.Columns + column] = enemy;
                 }
             }
+
             return enemies;
         }
     }

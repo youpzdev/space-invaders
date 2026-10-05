@@ -32,9 +32,17 @@ namespace SpaceInvaders
 
         private void Shoot()
         {
-            if (!playing) return;
+            if (!playing)
+            {
+                return;
+            }
+
             Enemy enemy = formation.GetRandomAliveEnemy();
-            if (enemy == null) return;
+            if (enemy == null)
+            {
+                return;
+            }
+
             projectiles.Fire(enemy.FirePosition, Vector2.down, Faction.Enemy);
             ScheduleShot();
         }

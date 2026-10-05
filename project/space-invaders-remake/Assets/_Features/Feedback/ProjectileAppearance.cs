@@ -6,15 +6,26 @@ namespace SpaceInvaders
     [RequireComponent(typeof(Projectile))]
     public sealed class ProjectileAppearance : MonoBehaviour
     {
+        [Header("Settings")]
+        [Tooltip("Shared colors and animation settings for combat effects.")]
         [SerializeField] private FeedbackConfig config;
+
+        [Header("Visuals")]
+        [Tooltip("Sprite renderer used by this component.")]
         [SerializeField] private SpriteRenderer sprite;
+
+        [Tooltip("Projectile trail cleared between pooled shots.")]
         [SerializeField] private TrailRenderer trail;
+
         private Projectile projectile;
 
         private void Awake()
         {
             if (config == null || sprite == null || trail == null)
+            {
                 throw new InvalidOperationException("ProjectileAppearance.config, sprite and trail must be assigned");
+            }
+
             config.Validate();
             projectile = GetComponent<Projectile>();
             projectile.Launched += OnLaunched;
@@ -31,12 +42,18 @@ namespace SpaceInvaders
 
         private void OnDisable()
         {
-            if (trail != null) trail.Clear();
+            if (trail != null)
+            {
+                trail.Clear();
+            }
         }
 
         private void OnDestroy()
         {
-            if (projectile != null) projectile.Launched -= OnLaunched;
+            if (projectile != null)
+            {
+                projectile.Launched -= OnLaunched;
+            }
         }
     }
 }

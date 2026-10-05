@@ -44,9 +44,7 @@ namespace SpaceInvaders
 
             PlayerController player = Instantiate(playerPrefab, new Vector3(0f, bottomLeft.y + 1.2f, 0f), Quaternion.identity);
 
-            float halfWidth = player.GetComponent<SpriteRenderer>().bounds.extents.x;
-
-            player.Initialize(playerConfig, projectiles, new Vector2(bottomLeft.x + halfWidth, topRight.x - halfWidth));
+            float halfWidth = player.GetComponentInChildren<SpriteRenderer>().bounds.extents.x;
             PlayerDamageReceiver damage = player.GetComponent<PlayerDamageReceiver>();
             damage.Initialize(new Health(3), playerConfig);
 
@@ -56,6 +54,13 @@ namespace SpaceInvaders
             formation.transform.position = new Vector3(0f, topRight.y - 1.6f, 0f);
 
             Enemy[] enemies = new EnemySpawner(enemyPrefab, formation.transform, enemyConfig, formationConfig).SpawnGrid();
+            float enemyHalfWidth = 0f;
+            foreach (Enemy enemy in enemies)
+                enemyHalfWidth = Mathf.Max(enemyHalfWidth, enemy.GetComponentInChildren<SpriteRenderer>().bounds.extents.x);
+            var bounds = PlayfieldBounds.ForFormation(formationConfig.Columns,
+                formationConfig.Spacing.x * Mathf.Abs(formation.transform.lossyScale.x), enemyHalfWidth, halfWidth,
+                formation.transform.position.x, bottomLeft.x, topRight.x);
+            player.Initialize(playerConfig, projectiles, new Vector2(bounds.Min, bounds.Max));
             formation.Initialize(enemies, formationConfig, defeatZone);
             shooter.Initialize(formation, projectiles, enemyConfig);
 

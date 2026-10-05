@@ -18,6 +18,8 @@ namespace SpaceInvaders
         [SerializeField] private DefeatZone defeatZone;
         [SerializeField] private GameHud hud;
         [SerializeField] private ResultPanel result;
+        [SerializeField] private CombatFeedback feedback;
+        [SerializeField] private PlayfieldView playfield;
         private GameController controller;
         public GameSession Session { get; private set; }
 
@@ -25,7 +27,7 @@ namespace SpaceInvaders
         {
             if (gameCamera == null || playerPrefab == null || enemyPrefab == null || playerConfig == null ||
                 enemyConfig == null || formationConfig == null || projectileConfig == null || formation == null ||
-                shooter == null || projectiles == null || defeatZone == null || hud == null || result == null)
+                shooter == null || projectiles == null || defeatZone == null || hud == null || result == null || feedback == null || playfield == null)
                 throw new InvalidOperationException("Bootstrapper: camera, prefabs, configs and scene references must be assigned.");
 
             playerConfig.Validate();
@@ -61,12 +63,14 @@ namespace SpaceInvaders
                 formationConfig.Spacing.x * Mathf.Abs(formation.transform.lossyScale.x), enemyHalfWidth, halfWidth,
                 formation.transform.position.x, bottomLeft.x, topRight.x);
             player.Initialize(playerConfig, projectiles, new Vector2(bounds.Min, bounds.Max));
+            playfield.Initialize(bounds.Min - halfWidth, bounds.Max + halfWidth, player.transform.position.y - 0.45f, topRight.y - 0.8f);
             formation.Initialize(enemies, formationConfig, defeatZone);
             shooter.Initialize(formation, projectiles, enemyConfig);
 
             defeatZone.transform.position = new Vector3(0f, player.transform.position.y, 0f);
 
             hud.Bind(score, damage.Health);
+            feedback.Initialize(projectiles, enemies, damage, gameCamera, player.GetComponentInChildren<SpriteRenderer>().transform);
 
             controller = new GameController(Session, player, damage, effect, formation, shooter, projectiles, defeatZone, result);
             controller.StartGame();
@@ -75,6 +79,7 @@ namespace SpaceInvaders
         private void OnDestroy()
         {
             controller?.Dispose();
+            if (feedback != null) feedback.Dispose();
             if (hud != null) hud.Unbind();
         }
     }

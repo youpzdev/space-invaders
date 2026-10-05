@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace SpaceInvaders
@@ -10,6 +11,7 @@ namespace SpaceInvaders
         private FormationConfig config;
         private DefeatZone defeatZone;
         private Action cancelDescent;
+        private Tween descent;
 
         public int AliveCount => aliveEnemies.Count;
 
@@ -34,7 +36,31 @@ namespace SpaceInvaders
 
         private void Descend()
         {
-            transform.position += Vector3.down * config.DescentStep;
+            if (aliveEnemies.Count == 0)
+            {
+                return;
+            }
+
+            float distance = config.DescentStep;
+            foreach (Enemy enemy in aliveEnemies)
+            {
+                distance = defeatZone.LimitDescent(enemy, distance);
+            }
+
+            descent?.Kill();
+            if (distance <= 0f)
+            {
+                CheckDefeat();
+                return;
+            }
+
+            descent = transform.DOMoveY(transform.position.y - distance, config.DescentDuration)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(CheckDefeat);
+        }
+
+        private void CheckDefeat()
+        {
             foreach (Enemy enemy in aliveEnemies)
             {
                 defeatZone.CheckEnemy(enemy);
@@ -45,6 +71,8 @@ namespace SpaceInvaders
         {
             cancelDescent?.Invoke();
             cancelDescent = null;
+            descent?.Kill();
+            descent = null;
         }
 
         public Enemy GetRandomAliveEnemy()

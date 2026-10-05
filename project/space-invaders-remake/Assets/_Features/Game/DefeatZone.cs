@@ -7,6 +7,11 @@ namespace SpaceInvaders
     {
         public event Action EnemyEntered;
 
+        public float LimitDescent(Enemy enemy, float distance)
+        {
+            return enemy.IsAlive ? Mathf.Min(distance, Mathf.Max(0f, enemy.Bottom - transform.position.y)) : distance;
+        }
+
         public void CheckEnemy(Enemy enemy)
         {
             if (enemy.IsAlive && enemy.Bottom <= transform.position.y)

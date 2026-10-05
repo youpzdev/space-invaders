@@ -23,6 +23,9 @@ namespace SpaceInvaders
         [Tooltip("Distance moved down per step in world units.")]
         [SerializeField] private float descentStep = 0.3f;
 
+        [Tooltip("Seconds spent moving each downward step. Must not exceed the descent interval.")]
+        [SerializeField] private float descentDuration = 0.18f;
+
         [Header("Appearance")]
         [Tooltip("Sprites assigned from top to bottom and repeated when there are more rows.")]
         [SerializeField] private Sprite[] rowSprites;
@@ -32,6 +35,7 @@ namespace SpaceInvaders
         public Vector2 Spacing => spacing;
         public float DescentInterval => descentInterval;
         public float DescentStep => descentStep;
+        public float DescentDuration => descentDuration;
         public Sprite[] RowSprites => rowSprites;
 
         public void Validate()
@@ -54,6 +58,11 @@ namespace SpaceInvaders
             if (!float.IsFinite(descentStep) || descentStep <= 0f)
             {
                 throw new InvalidOperationException($"FormationConfig.descentStep must be positive: {descentStep}");
+            }
+
+            if (!float.IsFinite(descentDuration) || descentDuration <= 0f || descentDuration > descentInterval)
+            {
+                throw new InvalidOperationException($"FormationConfig.descentDuration must be positive and at most {descentInterval}: {descentDuration}");
             }
 
             if (rowSprites == null || rowSprites.Length == 0)

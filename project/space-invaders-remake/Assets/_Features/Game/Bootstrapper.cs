@@ -121,7 +121,8 @@ namespace SpaceInvaders
             shooter.Initialize(formation, projectiles, enemyConfig);
 
 
-            defeatZone.transform.position = new Vector3(0f, player.transform.position.y, 0f);
+            float playerTop = player.GetComponentInChildren<SpriteRenderer>().bounds.max.y;
+            defeatZone.transform.position = new Vector3(0f, playerTop, 0f);
 
 
             hud.Bind(score, damage.Health);

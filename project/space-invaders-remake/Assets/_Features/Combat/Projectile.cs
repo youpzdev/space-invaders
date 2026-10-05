@@ -13,6 +13,8 @@ namespace SpaceInvaders
         private Faction faction;
         private bool flying;
 
+        public event Action<Faction> Launched;
+
         public void Initialize(Vector2 direction, Faction owner, float speed, Camera camera, Action<Projectile> returnToPool)
         {
             body = GetComponent<Rigidbody2D>();
@@ -24,6 +26,7 @@ namespace SpaceInvaders
             body.linearVelocity = Vector2.zero;
             body.angularVelocity = 0f;
             flying = true;
+            Launched?.Invoke(owner);
         }
 
         public void ReturnToPool()

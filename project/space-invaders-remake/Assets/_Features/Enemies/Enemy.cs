@@ -14,6 +14,7 @@ namespace SpaceInvaders
         public Vector3 FirePosition => muzzle.position;
         public float Bottom => sprite.bounds.min.y;
         public event Action<Enemy> Died;
+        public event Action<Enemy> Hit;
 
         public void Initialize(int hitPoints, Sprite appearance)
         {
@@ -26,7 +27,10 @@ namespace SpaceInvaders
 
         public void TakeDamage(int amount)
         {
-            if (IsAlive) health.TakeDamage(amount);
+            if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, "Enemy damage must be positive");
+            if (!IsAlive) return;
+            Hit?.Invoke(this);
+            health.TakeDamage(amount);
         }
 
         private void OnDepleted()

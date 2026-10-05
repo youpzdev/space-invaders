@@ -12,6 +12,8 @@ namespace SpaceInvaders
         private Camera gameCamera;
         private bool playing;
 
+        public event Action<Vector3, Faction> ShotFired;
+
         public void Initialize(ProjectileConfig projectileConfig, Camera camera)
         {
             if (projectileConfig == null) throw new ArgumentNullException(nameof(projectileConfig));
@@ -31,6 +33,8 @@ namespace SpaceInvaders
 
         public void Fire(Vector3 position, Vector2 direction, Faction faction)
         {
+            if (faction != Faction.Player && faction != Faction.Enemy)
+                throw new ArgumentOutOfRangeException(nameof(faction), faction, "Projectile faction must be Player or Enemy");
             if (!playing) return;
             if (direction != Vector2.up && direction != Vector2.down)
                 throw new ArgumentException($"Projectile direction must be vertical: {direction}", nameof(direction));
@@ -39,6 +43,7 @@ namespace SpaceInvaders
             active.Add(projectile);
             float speed = faction == Faction.Player ? config.PlayerSpeed : config.EnemySpeed;
             projectile.Initialize(direction, faction, speed, gameCamera, Release);
+            ShotFired?.Invoke(position, faction);
         }
 
         public void StopAndClear()
